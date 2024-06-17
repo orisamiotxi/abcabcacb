@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B;
+            color: #fff;
+            margin-top: 20px;
+        }
+        .navbar {
+            background-color: #202324;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px;
+            background-color: #EC5E2A;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 20px;
+            color: #fff;
+        }
+        .nav-link.btn {
+            padding: 10px 15px;
+            margin-left: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-link.btn:hover {
+            background-color: #252729;
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729;
+        }
+        .input-field, .promo-code {
+            background-color: #252729;
+            color: #fff;
+            border: 1px solid #EC5E2A;
+            border-radius: 10px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .input-field:focus, .promo-code:focus {
+            outline: none;
+            border-color: #EC5E2A;
+            box-shadow: 0 0 5px #EC5E2A;
+        }
+        .button {
+            background-color: #EC5E2A;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #ff7b47;
+        }
+        .next-button {
+            background-color: #EC5E2A;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+        }
+        .next-button:hover {
+            background-color: #ff7b47;
+        }
+        .container {
+            margin: 50px auto;
+            max-width: 600px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .dropdown, .input-field, .promo-code {
+            display: block;
+            width: calc(100% - 20px);
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .product-info img {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            border-radius: 10px;
+        }
+        .product-info span {
+            color: #EC5E2A;
+            font-size: 1.2em;
+        }
+        .promo-section {
+            display: flex;
+            align-items: center;
+        }
+        .promo-code {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .price {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .price div {
+            width: calc(50% - 10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="product-info">
+            <img src="{{ url_for('static', filename=product.image) }}" class="product-image mb-3" alt="Product Image">
+            <span>{{ product.name }}</span>
+        </div>
+        
+        
+        <div class="section">
+            <label for="delivery-method">მიტანის მეთოდი</label>
+            <select id="delivery-method" class="input-field">
+                <option>ადგილზე მიტანა</option>
+                <option>სხვა მეთოდი</option>
+            </select>
+        </div>
+        
+        <div class="section">
+            <label for="city">აირჩიეთ ქალაქი</label>
+            <select id="city" class="input-field">
+                <option>თბილისი</option>
+                <option>ქუთაისი</option>
+                <option>ბათუმი</option>
+                <option>რუსთავი</option>
+            </select>
+        </div>
+        
+        <div class="section">
+            <label for="receiver-id">მიმღების პირადი ნომერი</label>
+            <input type="text" id="receiver-id" class="input-field" required>
+        </div>
+        
+        <div class="section" >
+            <label for="receiver-phone" >მიმღების ტელეფონის ნომერი</label>
+            <input type="text" id="receiver-phone" class="input-field" required>
+        </div>
+
+        <form action="{{ url_for('apply_promo_code', id=product.id) }}" method="POST">
+            <div class="section promo-section">
+                <input type="text" name="promo_code" class="promo-code" placeholder="შეიყვანე პრომო კოდი ან ვაუჩერი">
+                <button type="submit" class="button">გააქტიურება</button>
+            </div>
+        </form>
+
+        <!-- Price sections -->
+        <div class="section price">
+            <div>პროდუქტის ფასი</div>
+            <div>{{ product.price }}₾</div>
+        </div>
+
+        <div class="section price">
+            <div>მიწოდების სერვისი</div>
+            <div>0₾</div>
+        </div>
+
+        <div class="section">
+        <div class="section">
+            <div>საბოლოო თანხა</div>
+            <!-- Check if discounted_price is provided and display accordingly -->
+            {% if discounted_price is defined %}
+                <div>{{ discounted_price }} ₾</div>
+            {% else %}
+                <!-- Display the original price if no discount applied -->
+                <div>{{ product.price}} ₾</div>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('checkout1', id=product.id) }}">
+            <button class="next-button">შემდეგი</button>
+        </a>
+    </div>
+</body>
+</html>

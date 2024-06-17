@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; 
+            margin-top: 20px; 
+        }
+        .navbar {
+            background-color: #202324; 
+        }
+        .navbar-brand {
+            color: #fff; 
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; 
+            background-color: #EC5E2A;
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding-left: 20px; 
+            color: #fff; 
+        }
+        .nav-link.btn {
+            padding: 10px 15px; 
+            margin-left: 10px; 
+            background-color: #191B1C; 
+            color: #fff; 
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+
+        .nav-link.btn:hover {
+            background-color: #252729; 
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; 
+        }
+        .carousel {
+            width: 900px; 
+            height: 400px; 
+            margin-left: 400px; 
+            margin-top: 50px; 
+            margin-bottom: 50px; 
+            border-radius: 15px; 
+            overflow: hidden; 
+        }
+        .user-icon {
+            height: 40px; 
+            width: auto; 
+            margin-left: 10px; 
+        }
+        .product-box {
+            background-color: #252729;
+            color: #fff;
+            width: 200px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-left: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .add-to-wishlist-btn {
+            width: 150px;
+            padding: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .add-to-wishlist-btn:hover {
+            background-color: #252729;
+        }
+        h2 {
+            color: #EC5E2A;
+        }
+        .admin-panel {
+            color: #EC5E2A;
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: left;
+            margin-left: 135px; /* Adjust as needed for desired positioning */
+        }
+        .separator {
+            background-color: #EC5E2A;
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: 175px; /* Match the vertical separator position */
+            z-index: 1050; /* Ensure it's above the sidebar */
+        }
+
+        .container {
+            position: relative;
+        }
+        .cart-btn {
+            padding: 10px 15px;
+            background-color: #EC5E2A; /* Change background color */
+            color: #fff;
+            border-radius: 10px; /* Adjust border-radius to match product box */
+            margin-bottom: 30px; /* Add margin-bottom to position it slightly above the product boxes */
+            display: inline-block; /* Ensure it's displayed inline with the product boxes */
+            margin-left: 20px
+        }
+        .modal-header {
+            background-color: #EC5E2A
+        }
+
+        .product-table th, .product-table td {
+            color: #fff;
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .product-table img {
+            width: 50px;
+            height: auto;
+        }
+
+        .product-table-container {
+            margin-top: 40px; /* Adjust this value to fit under the separator */
+        }
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Adjust this if needed */
+        }
+        .centered-image {
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        .centered-image:hover {
+            transform: scale(1.05);
+        }
+        .ab {
+            margin-left: 100px
+        }
+        .brand-image {
+
+    height: auto;
+    transition: transform 0.3s ease;
+    display: block;
+    margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 15%;
+}
+
+.brand-image:hover {
+    transform: scale(1.05);
+}
+    .ac {
+        margin-left: -120px;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <img src="https://i.ibb.co/7bDPxb3/1a1f6d03-54fc-4816-bada-209138f44a7f15ce9699-115f-40ee-bec2-d51c14d9d701-removebg-preview.png" class="centered-image" alt="Centered Image">
+    <img src="https://i.ibb.co/NskS2mB/1cc47360-486b-4d97-b8ec-22b52d626c33ee11a4ec-84e6-4175-80fa-ae637ecb7dc7-removebg-preview.png" class="centered-image">
+    <img src=" https://i.ibb.co/Br3SFXK/bcc8e9c4-0db8-4fc6-8d9d-05a16858a824c927b03c-2032-4294-a5c7-5f71e5c9340c-removebg-preview.png" class="centered-image">
+
+   
+    

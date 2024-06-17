@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name - Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B;
+            color: #fff;
+            margin-top: 50px;
+        }
+        .navbar {
+            background-color: #202324;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px;
+            background-color: #EC5E2A;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 20px;
+            color: #fff;
+        }
+        .nav-link.btn {
+            padding: 10px 15px;
+            margin-left: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        .nav-link.btn:hover {
+            background-color: #252729;
+        }
+        .bubble {
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px 15px;
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .bubble:hover {
+            background-color: #252729;
+        }
+        .bank-box {
+            background-color: #252729;
+            color: #fff;
+            border-radius: 25px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .bank-box img {
+            width: 100px;
+            height: auto;
+        }
+        .purchase-box {
+            background-color: #252729;
+            border-radius: 25px;
+            padding: 20px;
+        }
+        .purchase-box .button {
+            background-color: #EC5E2A;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .purchase-box .button:hover {
+            background-color: #ff7b47;
+        }
+        .price-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .slider:hover {
+            opacity: 1;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #EC5E2A;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #EC5E2A;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            <div class="d-flex ms-auto">
+                <a class="nav-link btn" href="#">რეგისტრაცია</a>
+                <a class="nav-link btn btn-wishlist" href="#">ავტორიზაცია</a>
+                <a class="nav-link btn" href="#">კალათა</a>
+                <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon ms-2">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="d-flex">
+                    <div class="bubble me-2" onclick="showBanks('installments')">განვადებით შეძენა</div>
+                </div>
+
+                <div id="installments" class="bank-options mt-4">
+                    <div class="bank-box" onclick="showModal('bog')">
+                        <img src="https://zoommer.ge/icons/bog.png" alt="Bank of Georgia">
+                    </div>
+                    <div class="bank-box" onclick="showModal('tbc')">
+                        <img src="https://zoommer.ge/icons/tbc.svg" alt="TBC Bank">
+                    </div>
+                    <div class="bank-box" onclick="showModal('kredo')">
+                        <img src="https://zoommer.ge/icons/kredo.svg" alt="Kredo Bank">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="purchase-box">
+                    <div class="price-summary">
+                        <div>ღირებულება:</div>
+                        <div>{{ discounted_price }} ₾</div>
+                    </div>
+                    <div class="price-summary">
+                        <div>მიტანის ღირებულება:</div>
+                        <div>0 ₾</div>
+                    </div>
+                    <div class="price-summary">
+                        <div>გადასახადი თანხა:</div>
+                        <div id="totalPrice">{{ discounted_price }} ₾</div>
+                    </div>
+                    
+                    <button class="button">შეძენა</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #252729; color: #fff;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loanModalLabel">განვადების დეტალები</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <img id="bankLogo" src="" alt="Bank Logo" style="width: 100px;">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>განვადება</div>
+                        <div id="months">3</div>
+                        <div>თვე</div>
+                    </div>
+                    <input type="range" min="3" max="48" value="3" class="slider" id="monthsRange">
+                    <div class="d-flex justify-content-between mt-2">
+                        <span>3</span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span>48</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div>სულ თვიურად</div>
+                        <div id="totalPrice">{{ product.price / 3 | round(2) }} ₾</div> 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button" data-bs-dismiss="modal" onclick="applyLoanPrice()">განვადება</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="totalPrice" data-product-price="{{ product.price }}"></div>
+
+    <script>
+        // Access product price from data attribute
+        const productPrice = parseFloat(document.getElementById('totalPrice').dataset.productPrice);
+        
+        // Function to calculate and update total price in modal
+        function updateTotalPrice() {
+            const monthsValue = document.getElementById('monthsRange').value;
+            const pricePerMonth = (productPrice / monthsValue).toFixed(2);
+            document.getElementById('months').innerText = monthsValue;
+            document.getElementById('totalPrice').innerText = `${pricePerMonth} ₾`;
+            // Update the displayed price in the "გადასახადი თანხა" section
+            document.getElementById('checkoutPrice').innerText = `${pricePerMonth} ₾`;
+        }
+    
+        // Function to show modal and update total price
+        function showModal(bank) {
+            const bankLogos = {
+                bog: 'https://zoommer.ge/icons/bog.png',
+                tbc: 'https://zoommer.ge/icons/tbc.svg',
+                kredo: 'https://zoommer.ge/icons/kredo.svg'
+            };
+            document.getElementById('bankLogo').src = bankLogos[bank];
+            const loanModal = new bootstrap.Modal(document.getElementById('loanModal'));
+            updateTotalPrice(); // Update total price when modal is shown
+            loanModal.show();
+        }
+    
+        // Event listener for input change on months range
+        const monthsRange = document.getElementById('monthsRange');
+        monthsRange.addEventListener('input', updateTotalPrice);
+    
+        // Function to apply loan price when "განვადება" button is clicked
+        function applyLoanPrice() {
+            const totalLoanPrice = document.getElementById('totalPrice').innerText;
+            // Update the displayed price in the "გადასახადი თანხა" section with the selected loan price
+            document.getElementById('checkoutPrice').innerText = totalLoanPrice;
+            // Here you can add logic to process the selected loan price
+            console.log("Total loan price:", totalLoanPrice);
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    
+       

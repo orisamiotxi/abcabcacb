@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; /* Dark theme background color */
+            margin-top: 20px; /* Added margin to accommodate the fixed bar */
+        }
+        .navbar {
+            background-color: #202324; /* Orange color for the navbar */
+        }
+        .navbar-brand {
+            color: #fff; /* White color for the company name */
+            font-weight: bold;
+        }
+        /* Added style for the fixed top bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; /* Adjust height as needed */
+            background-color: #EC5E2A;
+            z-index: 9999; /* Ensures it's above other content */
+            display: flex; /* Flexbox layout */
+            align-items: center; /* Center vertically */
+            justify-content: flex-start; /* Align items to the left */
+            padding-left: 20px; /* Add padding to the left */
+            color: #fff; /* White color for text */
+        }
+        /* Added style for the login, register, and wishlist buttons */
+        .nav-link.btn {
+            padding: 15px 15px; /* Adjust padding as needed */
+            margin-left: 10px; /* Adjust margin between buttons */
+            background-color: #191B1C; /* Darker than navbar background color */
+            color: #fff; /* White color for button text */
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .nav-link.btn:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        /* Added style for the carousel */
+        /* Style for the clickable image */
+        .user-icon {
+            height: 40px; /* Adjust the height as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-left: 10px; /* Margin between buttons and the icon */
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60 <!-- Added phone number to the top bar -->
+    </div> <!-- Added top bar here -->  
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <style>
+        body {
+            background-color: #181A1B;
+            color: #fff;
+        }
+        .navbar, .footer {
+            background-color: #202324;
+        }
+        .navbar-brand, .footer {
+            color: #fff;
+        }
+        .product-title {
+            font-size: 1.5rem;
+        }
+        .breadcrumb, .breadcrumb-item a {
+            color: #EC5E2A;
+        }
+        .breadcrumb-item.active {
+            color: #fff;
+        }
+        .price-panel {
+            background-color: #202324;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .btn-buy {
+            background-color: #EC5E2A;
+            color: #fff;
+            border: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-buy:hover {
+            background-color: #d94e25;
+        }
+        .btn-option, .btn-option:hover {
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            width: 48%;
+        }
+        .btn-option:hover {
+            background-color: #252729;
+        }
+        .gift-option {
+            background-color: #252729;
+            color: #fff;
+            border: none;
+        }
+        .gift-option:hover {
+            background-color: #2d3033;
+        }
+        /* .product-image {
+            max-width: 100%;
+            height: auto;
+        } */
+        /* Modal styles */
+        .modal-header {
+            background-color: #EC5E2A;
+            border-bottom: none;
+        }
+        .modal-content {
+            background-color: #181A1B;
+            color: #fff;
+        }
+        .btn-close {
+            filter: invert(1);
+        }
+        /* Stock in Branches styles */
+        .branch-item {
+            border-bottom: 1px solid #2d3033;
+            padding: 10px 0;
+        }
+        .branch-item:last-child {
+            border-bottom: none;
+        }
+        .branch-city {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .branch-hours, .branch-phone {
+            color: #999;
+        }
+        .branch-phone {
+            color: #EC5E2A;
+        }
+        /* Insurance modal styles */
+        .insurance-img {
+            display: block;
+            margin: 20px auto;
+        }
+        .btn-ok {
+            background-color: #EC5E2A;
+            color: #fff;
+            border: none;
+            display: block;
+            margin: 0 auto;
+        }
+        .btn-ok:hover {
+            background-color: #d94e25;
+        }
+        .btn-custom {
+             background-color: #EC5E2A;
+             color: white;
+}
+
+        .col-lg-4 {
+            margin-top: -365px;
+            margin-left: 350px;
+        }
+        .list-group{
+            margin-left: 750px;
+            margin-top: -300px;
+            width: 100px
+        }
+        .amg {
+            margin-left: 380px;
+            margin-top: -390px;
+            color:  #EC5E2A
+        }
+        .product-box {
+    background-color: #181A1B;
+    color: #fff;
+    margin-left: 370px;
+    width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: -20px;
+    float: left;
+    text-align: center;
+    outline: 1px solid black; /* Added outline */
+}
+.ccc{
+    color: #181A1B
+}
+.product-box img {
+    max-width: 100%;
+    height: auto;
+}
+.product-box1 {
+    background-color: #181A1B;
+    color: #fff;
+    margin-left: 600px;
+    width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: -318px;
+    float: left;
+    text-align: center;
+    outline: 1px solid black; /* Added outline */
+}
+.product-box1 img {
+    max-width: 100%;
+    height: auto;
+}
+/* Style for the original price */
+.price-container {
+    position: relative;
+}
+
+.original-price {
+    margin: 0;
+}
+
+/* Style for the discounted price */
+.discounted-price {
+    margin: 0;
+    color: red;
+    text-decoration: line-through;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Main</a></li>
+                <li class="breadcrumb-item"><a href="#">{{ product.name }}</a></li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Product Details -->
+            <div class="col-lg-8">
+                <div class="product-title mb-2">
+                    {{ product.name }}
+                    {% if 'user' in session and session['user'].is_admin %}
+                        <form action="{{ url_for('edit_product_name', id=product.id) }}" method="POST" class="d-inline">
+                            <input type="text" name="name" value="{{ product.name }}" class="form-control bg-dark text-light d-inline w-auto">
+                            <button type="submit" class="btn btn-sm btn-custom">შეცვლა</button>
+
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="mb-2 ccc">2.9 inches</div>
+                <div class="mb-2 ccc">Color: Orange</div>
+
+                    <img src="{{ url_for('static', filename=product.image) }}" class="product-image mb-3" alt="Product Image">
+
+                <!-- Buttons -->
+
+
+
+                <!-- Description -->
+                <div class="description mt-4">
+
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+
+            <!-- Price and Options -->
+            <div class="col-lg-4">
+                <div class="price-panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span>
+                            {{ product.price }} ₾
+                            {% if 'user' in session and session['user'].is_admin %}
+                                <form action="{{ url_for('edit_product_price', id=product.id) }}" method="POST" class="d-inline">
+                                    <input type="text" name="price" value="{{ product.price }}" class="form-control bg-dark text-light d-inline w-auto">
+                                    <button type="submit" class="btn btn-sm btn-custom">შეცვლა</button>
+                                </form>
+                            {% endif %}
+                        </span>
+                        <span>per month: from {{ (product.price / 24) | round(2) }} ₾</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <button class="btn btn-option" data-bs-toggle="modal" data-bs-target="#stockModal">მარაგი</button>
+                        <button class="btn btn-option" data-bs-toggle="modal" data-bs-target="#insuranceModal">ფასის დაზღვევა</button>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <button class="btn btn-option" data-bs-toggle="modal" data-bs-target="#priceControlModal">ფასის კონტროლი</button>
+                        <button class="btn btn-option" data-bs-toggle="modal" data-bs-target="#priceReservationModal">ფასის ჯავშნა</button>
+                    </div>
+                    {% if 'user' in session %}
+                        <a href="{{ url_for('checkout', id=product.id) }}">
+                            <button class="btn btn-buy mb-2">ყიდვა</button>
+                        </a>
+                    {% else %}
+                         <a href="{{ url_for('register') }}">
+                            <button class="btn btn-buy mb-2">ყიდვა</button>
+                         </a>
+                    {% endif %}
+
+                    
+                    
+                    
+                
+
+                    <button class="btn btn-option w-100">კალათაში დამატება</button>
+                </div>
+                <h2 class="amg">შეთავაზებები</h2>
+<div class="container mt-5">
+    <div id="product-list">
+        {% for random_product in random_products %}
+        <div class="product-box" id="product-{{ random_product.id }}">
+            <img src="{{ url_for('static', filename=random_product.image) }}" class="product-image mb-3" alt="Product Image">
+            <a href="{{ url_for('product', id=random_product.id) }}">
+                <p>{{ random_product.name }}</p>
+            </a>
+            <div class="price-container">
+                <p class="original-price">{{ random_product.price }} ₾</p>
+                <p class="discounted-price">{{ random_product.price + 250 }} ₾</p>
+            </div>
+            <a class="btn btn-danger" href="" style="background-color: rgba(236, 94, 42, 0.5);">დამატება</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="container mt-5">
+    <div id="product-list1">
+        {% for random_product in random_products1 %}
+        <div class="product-box1" id="product-{{ random_product.id }}">
+            <img src="{{ url_for('static', filename=random_product.image) }}" class="product-image mb-3" alt="Product Image">
+            <a href="{{ url_for('product', id=random_product.id) }}">
+                <p>{{ random_product.name }}</p>
+            </a>
+            <div class="price-container">
+                <p class="original-price">{{ random_product.price }} ₾</p>
+                <p class="discounted-price">{{ random_product.price + 250 }} ₾</p>
+            </div>
+            <a class="btn btn-danger" href="" style="background-color: rgba(236, 94, 42, 0.5);">დამატება</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+                
+                
+
+                <!-- Suggestion boxes (replace the old options list) -->
+            </div>
+        </div>
+            </div>
+            
+
+            <!-- Purchase Panel -->
+            
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer py-3 text-center">
+        &copy; 2024 Zoomer All rights reserved.
+    </div>
+
+    <style>
+        .comment-card {
+            background-color: #181A1B; /* Match with body color */
+            border: 1px solid #000; /* Add black outline */
+        }
+        .comment-text {
+            color: #999; /* Lighter text color */
+        }
+    </style>
+    
+    <div class="container mt-4">
+        <h3>კომენტარები</h3>
+        {% if 'user' in session %}
+        <form action="{{ url_for('product', id=product.id) }}" method="post">
+            <div class="mb-3">
+                <textarea name="comment" rows="2" class="form-control bg-dark text-light" placeholder="Add a comment" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-buy mb-2">Submit</button>
+        </form>
+        {% endif %}
+        <div class="comments">
+            {% for comment in product.comments %}
+            <div class="card mb-3 comment-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon me-2">
+                        <span>{{ username }}</span>
+                    </div>
+                    <p class="comment-text">{{ comment.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+    
+    
+
+    <!-- Modal for Stock in Branches -->
+    <div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stockModalLabel">მარაგი ფილიალებში</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Branch Items -->
+                    <div class="branch-item">
+                        <div class="branch-city">თბილისი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 591 967 601</div>
+                    </div>
+                    <div class="branch-item">
+                        <div class="branch-city">ბათუმი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 599 862 449</div>
+                    </div>
+                    <div class="branch-item">
+                        <div class="branch-city">ქუთაისი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 591 967 608</div>
+                    </div>
+                    <div class="branch-item">
+                        <div class="branch-city">რუსთავი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 591 340 476</div>
+                    </div>
+                    <div class="branch-item">
+                        <div class="branch-city">გორი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 591 340 476</div>
+                    </div>
+                    <div class="branch-item">
+                        <div class="branch-city">თელავი</div>
+                        <div class="branch-hours">Mon-Sat: 10:00:00 - 20:00:00</div>
+                        <div class="branch-hours">Sunday: 10:00:00 - 19:00:00</div>
+                        <div class="branch-phone">+995 591 340 476</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Price Insurance -->
+    <div class="modal fade" id="insuranceModal" tabindex="-1" aria-labelledby="insuranceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="insuranceModalLabel">ფასის დაზღვევა</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>პროდუქტის ფასი დაზღვეულია</p>
+                    <img src="https://zoommer.ge/icons/register-succes.svg" alt="Success Image" class="insurance-img">
+                    <button type="button" class="btn btn-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Price Control -->
+    <div class="modal fade" id="priceControlModal" tabindex="-1" aria-labelledby="priceControlModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="priceControlModalLabel">ფასის კონტროლი</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>პროდუქტის ფასი კონტროლის ქვეშ მდებარეობს!</p>
+                    <img src="https://zoommer.ge/icons/register-succes.svg" alt="Success Image" class="insurance-img">
+                    <button type="button" class="btn btn-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Price Reservation -->
+    <div class="modal fade" id="priceReservationModal" tabindex="-1" aria-labelledby="priceReservationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="priceReservationModalLabel">ფასის ჯავშნა</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>ფასი დაჯავშნილია</p>
+                    <img src="https://zoommer.ge/icons/register-succes.svg" alt="Success Image" class="insurance-img">
+                    <button type="button" class="btn btn-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+ 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; 
+            margin-top: 20px; 
+        }
+        .navbar {
+            background-color: #202324; 
+        }
+        .navbar-brand {
+            color: #fff; 
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; 
+            background-color: #EC5E2A;
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding-left: 20px; 
+            color: #fff; 
+        }
+        .nav-link.btn {
+            padding: 10px 15px; 
+            margin-left: 10px; 
+            background-color: #191B1C; 
+            color: #fff; 
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .nav-link.btn:hover {
+            background-color: #252729; 
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; 
+        }
+        .carousel {
+            width: 900px; 
+            height: 400px; 
+            margin-left: 400px; 
+            margin-top: 50px; 
+            margin-bottom: 50px; 
+            border-radius: 15px; 
+            overflow: hidden; 
+        }
+        .user-icon {
+            height: 40px; 
+            width: auto; 
+            margin-left: 10px; 
+        }
+        .product-box {
+            background-color: #252729;
+            color: #fff;
+            width: 200px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-left: 20px;
+            text-align: center;
+        }
+        .product-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .add-to-wishlist-btn {
+            width: 150px;
+            padding: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .add-to-wishlist-btn:hover {
+            background-color: #252729;
+        }
+    </style>  
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            <div class="d-flex align-items-center ms-auto">
+                <a class="nav-link btn" href="#">კალათა</a>
+                <a class="nav-link btn" href="#">რეგისტრაცია</a>
+                <a class="nav-link btn btn-wishlist" href="#">ავტორიზაცია</a>
+                <a href="profile.html">
+                    <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                </a>
+            </div>
+        </div>
+    </nav> -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if 'user' not in session %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                    {% endif %} 
+                    {% if 'user' not in session %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Log in</a>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('logout')}}">Log out</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+
+                
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

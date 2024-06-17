@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; /* Dark theme background color */
+            margin-top: 20px; /* Added margin to accommodate the fixed bar */
+        }
+        .navbar {
+            background-color: #202324; /* Orange color for the navbar */
+        }
+        .navbar-brand {
+            color: #fff; /* White color for the company name */
+            font-weight: bold;
+        }
+        /* Added style for the fixed top bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; /* Adjust height as needed */
+            background-color: #EC5E2A;
+            z-index: 9999; /* Ensures it's above other content */
+            display: flex; /* Flexbox layout */
+            align-items: center; /* Center vertically */
+            justify-content: flex-start; /* Align items to the left */
+            padding-left: 20px; /* Add padding to the left */
+            color: #fff; /* White color for text */
+        }
+        /* Added style for the login, register, and wishlist buttons */
+        .nav-link.btn {
+            padding: 15px 15px; /* Adjust padding as needed */
+            background-color: #191B1C; /* Darker than navbar background color */
+            color: #fff; /* White color for button text */
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .nav-link.btn:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        /* Added style for the carousel */
+        /* Style for the clickable image */
+        .user-icon {
+            height: 40px; /* Adjust the height as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-left: 10px; /* Margin between buttons and the icon */
+        }
+        /* Center the forms */
+        .centered-form {
+            margin: 0 auto;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #252729; /* Darker background color */
+            border-radius: 10px;
+            margin-top: 50px; /* Adjust margin as needed */
+            color: #fff; /* White color for text */
+        }
+        /* Style for form inputs */
+        .form-control {
+            margin-bottom: 20px;
+            background-color: #191B1C; /* Darker background color */
+            color: #fff; /* White color for text */
+            border-color: #EC5E2A; /* Orange border color */
+        }
+        /* Style for form labels */
+        .form-label {
+            color: #EC5E2A; /* Orange color for labels */
+        }
+        /* Style for placeholder text in form inputs */
+        .form-control::placeholder {
+            color: #EC5E2A; /* Orange color for placeholder text */
+        }
+        /* Style for the logo */
+        .logo {
+            margin-top: 20px; /* Adjust margin-top to move the image down */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        label {
+            color: #EC5E2A;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60 <!-- Added phone number to the top bar -->
+    </div> <!-- Added top bar here -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+        
+        <div class="centered-form">
+            <div class="text-center mb-4">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logosx" class="logo">
+            </div>
+            <form action="{{ url_for('login') }}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">სახელი</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="შეიყვანეთ სახელი" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">პაროლი</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="შეიყვანეთ პაროლი" required>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark">ავტორიზაცია</button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

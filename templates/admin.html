@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; 
+            margin-top: 20px; 
+        }
+        .navbar {
+            background-color: #202324; 
+        }
+        .navbar-brand {
+            color: #fff; 
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; 
+            background-color: #EC5E2A;
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding-left: 20px; 
+            color: #fff; 
+        }
+        .nav-link.btn {
+            padding: 10px 15px; 
+            margin-left: 10px; 
+            background-color: #191B1C; 
+            color: #fff; 
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+
+        .nav-link.btn:hover {
+            background-color: #252729; 
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; 
+        }
+        .carousel {
+            width: 900px; 
+            height: 400px; 
+            margin-left: 400px; 
+            margin-top: 50px; 
+            margin-bottom: 50px; 
+            border-radius: 15px; 
+            overflow: hidden; 
+        }
+        .user-icon {
+            height: 40px; 
+            width: auto; 
+            margin-left: 10px; 
+        }
+        .product-box {
+            background-color: #252729;
+            color: #fff;
+            width: 200px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-left: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .add-to-wishlist-btn {
+            width: 150px;
+            padding: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .add-to-wishlist-btn:hover {
+            background-color: #252729;
+        }
+        h2 {
+            color: #EC5E2A;
+        }
+        .admin-panel {
+            color: #EC5E2A;
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: left;
+            margin-left: 135px; /* Adjust as needed for desired positioning */
+        }
+        .separator {
+            background-color: #EC5E2A;
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: 175px; /* Match the vertical separator position */
+            z-index: 1050; /* Ensure it's above the sidebar */
+        }
+
+        .container {
+            position: relative;
+        }
+        .cart-btn {
+            padding: 10px 15px;
+            background-color: #EC5E2A; /* Change background color */
+            color: #fff;
+            border-radius: 10px; /* Adjust border-radius to match product box */
+            margin-bottom: 30px; /* Add margin-bottom to position it slightly above the product boxes */
+            display: inline-block; /* Ensure it's displayed inline with the product boxes */
+            margin-left: 20px
+        }
+        .modal-header {
+            background-color: #EC5E2A
+        }
+
+        .product-table th, .product-table td {
+            color: #fff;
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .product-table img {
+            width: 50px;
+            height: auto;
+        }
+
+        .product-table-container {
+            margin-top: 40px; /* Adjust this value to fit under the separator */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-panel">
+        ადმინისტრატორის პანელი
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="vertical-separator"></div>
+    
+    <!-- Updated HTML -->
+    <div class="container mt-5 product-table-container">
+        <a class="cart-btn" data-bs-toggle="modal" data-bs-target="#addProductModal">დამატება</a>
+        <div id="product-list" class="mt-4">
+            <table class="table table-dark product-table">
+                <thead>
+                    <tr>
+                        <th>სურათი</th>
+                        <th>სახელი</th>
+                        <th>ფასი</th>
+                        <th>მოქმედება</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr id="product-{{ product.id }}">
+                        <td><img src="{{ url_for('static', filename=product.image) }}" alt="Product Image"></td>
+                        <td><a href="{{ url_for('product', id=product.id) }}">{{ product.name }} </a></td>
+                        <td>{{ product.price }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_product', id=product.id) }}" method="POST">
+                                <button type="submit" class="btn btn-danger">წაშლა</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #252729; color: #fff;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm" method="POST" action="{{ url_for('add_products') }}" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">სახელი</label>
+                            <input type="text" class="form-control" id="productName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">ფასი</label>
+                            <input type="number" class="form-control" id="productPrice" name="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">სურათი</label>
+                            <input type="file" class="form-control" id="productImage" name="image" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">პროდუქტის დამატება</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

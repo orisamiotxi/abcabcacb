@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; 
+            margin-top: 20px; 
+        }
+        .navbar {
+            background-color: #202324; 
+        }
+        .navbar-brand {
+            color: #fff; 
+            font-weight: bold;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; 
+            background-color: #EC5E2A;
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            padding-left: 20px; 
+            color: #fff; 
+        }
+        .nav-link.btn {
+            padding: 10px 15px; 
+            margin-left: 10px; 
+            background-color: #191B1C; 
+            color: #fff; 
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .nav-link.btn:hover {
+            background-color: #252729; 
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; 
+            transition: background-color 0.3s ease; 
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; 
+        }
+        .carousel {
+            width: 900px; 
+            height: 400px; 
+            margin-left: 400px; 
+            margin-top: 50px; 
+            margin-bottom: 50px; 
+            border-radius: 15px; 
+            overflow: hidden; 
+        }
+        .user-icon {
+            height: 40px; 
+            width: auto; 
+            margin-left: 10px; 
+        }
+        .product-box {
+            background-color: #181A1B;
+            color: #fff;
+            width: 200px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-left: 20px;
+            float: left;
+            text-align: center;
+        }
+        .product-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .add-to-wishlist-btn {
+            width: 150px;
+            padding: 10px;
+            background-color: #191B1C;
+            color: #fff;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .add-to-wishlist-btn:hover {
+            background-color: #252729;
+        }
+        h2 {
+            color : #EC5E2A
+        }
+        form.d-flex.ms-auto.mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        form.d-flex.ms-auto.mx-auto input.form-control {
+            border: 2px solid #EC5E2A; /* Border color */
+            background-color: #202324; /* Background color */
+            color: white; /* Text color */
+        }
+        form.d-flex.ms-auto.mx-auto input.form-control::placeholder {
+            color: #ccc; /* Placeholder text color */
+        }
+        .category-buttons {
+            position: absolute;
+            top: 140px; /* Adjust as needed */
+            left: 135px; /* Adjust as needed */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .category-button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            text-align: left;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .category-button:hover {
+            background-color: #252729;
+        }
+        .category-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .product-container {
+            width: 200px; /* Adjust the max-width as needed */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+        .product-box {
+             width: 200px;
+             border: 2px solid black; /* Add the border */
+             margin-bottom: 20px; /* Add some bottom margin to separate product boxes */
+        }
+        .brands-header {
+    color: #EC5E2A;
+    text-align: left;
+    margin-top: 40px; /* Adjust this value if needed */
+    margin-bottom: 20px; /* Adjust this value if needed */
+    margin-left: 140px; /* Aligns with the Apple button */
+}
+
+
+
+.brand-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.brand-image {
+    width: 150px; /* Adjust size as needed */
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.brand-image:hover {
+    transform: scale(1.05);
+}
+
+
+        
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="category-buttons">
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='phone') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_Mobile.svg" class="category-icon" alt="Phones">
+            მობილურები
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='tab') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_Tablet-05.svg" class="category-icon" alt="Tabs">
+            ტაბები
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='laptop') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_IT.svg" class="category-icon" alt="Laptops">
+            ლეპტოპები / IT
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='audio') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_speaker.svg" class="category-icon" alt="Audio Systems">
+            აუდიო სისტემები
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='gaming') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_Joystick%203.svg" class="category-icon" alt="Gaming">
+            Gaming
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='tv') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_TV.svg" class="category-icon" alt="TV">
+            TV / ვიდეომონიტორები
+        </button>
+        <button class="category-button" onclick="location.href='{{ url_for('search_results', query='cam') }}'">
+            <img src="https://zoomer-static.lemon.do/Zoomer_files/Devices_icons_V2_photo%20camera.svg" class="category-icon" alt="Photo and Video">
+            ფოტო / ვიდეო
+        </button>
+    </div>
+
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://zoommer.ge/_next/image?url=https%3A%2F%2Fs3.zoommer.ge%2Fsite%2F1788f299-5b1e-4410-88de-8f91fa59dfea_Thumb.jpeg&w=1920&q=75" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="https://zoommer.ge/_next/image?url=https%3A%2F%2Fs3.zoommer.ge%2Fsite%2Fb014220d-54fd-4c61-9c27-3034bbf3f55a_Thumb.jpeg&w=1920&q=75" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="https://zoommer.ge/_next/image?url=https%3A%2F%2Fs3.zoommer.ge%2Fsite%2F5ed2a399-e76d-4950-abfe-5a2b43a3d036_Thumb.jpeg&w=1920&q=75" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    
+
+    <h2 class="brands-header">ბრენდები</h2>
+<div class="brand-container">
+    <a href="{{ url_for('apple') }}"><img src="https://s3.zoommer.ge/site/785f4f88-486d-4998-9ce1-9bf115c11ad6a0861624-1f60-4343-818e-f628fe1abb7c.png" class="brand-image" alt="Brand 1"></a>
+    <a href="{{ url_for('google') }}"><img src="https://s3.zoommer.ge/site/dda50f27-84f4-43a4-a34b-01e6bd0bc47eb9b0703c-b15a-4f20-9b39-f9d3fef0826f.png" class="brand-image" alt="Brand 2"></a>
+    <a href="{{ url_for('playstation')}}"><img src="https://s3.zoommer.ge/site/d2a5148c-12ce-4b00-9c34-a9b04bf434a9ee7fb9a4-709d-455e-a166-fc56bdbb4a51.png" class="brand-image" alt="Brand 3"></a>
+    <a href="#"><img src="https://s3.zoommer.ge/site/6bf90287-fc37-41f5-9cae-d0ef959492d7683e5780-8084-4d46-95d5-5decc15bbb88.png" class="brand-image" alt="Brand 4"></a>
+    <a href="#"><img src="https://s3.zoommer.ge/site/650e6b05-38ac-4657-9283-76e5b9892e1ba8addead-81ee-4301-a9d3-375017bc67ac.png" class="brand-image" alt="Brand 5"></a>
+    <a href="#"><img src="https://s3.zoommer.ge/site/f8b901b5-3d8d-42b3-99ec-8f02a724c78dcd60fd88-6ef2-46c8-834c-2e8314a218e4.png" class="brand-image" alt="Brand 6"></a>
+</div>
+<div class="container mt-5">
+    <div id="product-list">
+        {% for product in queryset %}
+        <div class="product-box" id="product-{{ product.id }}">
+            <img src="{{ url_for('static', filename=product.image) }}" class="card-img-top"  alt="Product Image">
+            <a href="{{ url_for('product', id=product.id) }}">
+                <p>{{ product.name }}</p>
+            </a>
+            <p>{{ product.price }} ₾</p>
+            <a class="btn btn-danger" href="" style="background-color: rgba(236, 94, 42, 0.5);">დამატება</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>     
+</html>

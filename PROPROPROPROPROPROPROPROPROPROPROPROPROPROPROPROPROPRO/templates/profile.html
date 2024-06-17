@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181A1B; /* Dark theme background color */
+            margin-top: 20px; /* Added margin to accommodate the fixed bar */
+        }
+        .navbar {
+            background-color: #202324; /* Navbar background color */
+        }
+        .navbar-brand {
+            color: #fff; /* White color for the company name */
+            font-weight: bold;
+        }
+        /* Added style for the fixed top bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25px; /* Adjust height as needed */
+            background-color: #EC5E2A;
+            z-index: 9999; /* Ensures it's above other content */
+            display: flex; /* Flexbox layout */
+            align-items: center; /* Center vertically */
+            justify-content: flex-start; /* Align items to the left */
+            padding-left: 20px; /* Add padding to the left */
+            color: #fff; /* White color for text */
+        }
+        /* Added style for the login, register, and wishlist buttons */
+        .nav-link.btn {
+            padding: 15px 15px; /* Adjust padding as needed */
+            margin-left: 10px; /* Adjust margin between buttons */
+            background-color: #191B1C; /* Darker than body background color */
+            color: #fff; /* White color for button text */
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .nav-link.btn:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        .btn.btn-wishlist {
+            border-radius: 25px; /* Half square, half oval effect */
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+        .btn.btn-wishlist:hover {
+            background-color: #252729; /* Lighter color on hover */
+        }
+        /* Style for the clickable image */
+        .user-icon {
+            height: 40px; /* Adjust the height as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-left: 10px; /* Margin between buttons and the icon */
+        }
+        /* Style for the sidebar */
+        .sidebar {
+            position: fixed;
+            top: 145px; /* Adjust to below the navbar and separator */
+            left: 0;
+            width: 250px;
+            height: calc(100% - 145px); /* Adjust based on the top bar, navbar, and separator height */
+            background-color: #181A1B; /* Match the body background color */
+            padding-top: 20px;
+            z-index: 9998; /* Ensure it's below the top bar */
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+            background-color: #191B1C; /* Darker than sidebar background */
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #252729;
+        }
+        .content {
+            margin-left: 260px; /* Adjust based on the sidebar width */
+            margin-top: 100px; /* Adjust to match the separator height (145px for the separator and 52px for the greeting) */
+            padding: 10px;
+            color: #fff;
+            background-color: #181A1B; /* Match the body's background color */
+            max-height: calc(100vh - 145px); /* Set maximum height to viewport height minus separator height */
+            overflow-y: auto; /* Enable vertical scrolling when content overflows */
+        }
+        /* Style for the orange lines */
+        .separator {
+            background-color: #EC5E2A;
+            height: 2px;
+            width: 100%;
+            position: fixed;
+            top: 145px; /* Match the vertical separator position */
+            z-index: 9999; /* Ensure it's above the sidebar */
+        }
+        .vertical-separator {
+            position: fixed;
+            top: 145px;
+            left: 250px;
+            width: 2px;
+            height: calc(100% - 145px);
+            background-color: #EC5E2A;
+            z-index: 9999; /* Ensure it's above the sidebar */
+        }
+        /* Style for the greeting */
+        .greeting {
+            position: fixed;
+            top: 100px; /* Adjust based on the navbar height */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #fff;
+            z-index: 9999; /* Ensure it's above the sidebar */
+            text-align: center; /* Center the text */
+        }
+        .greeting img {
+            vertical-align: middle; /* Align icon with text */
+            height: 24px; /* Match the text size */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 8px; /* Space between icon and text */
+        }
+        .jj {
+            margin-top: -85px;
+            margin-left: -50px
+        }
+        .custom-text {
+            color: #EC5E2A; /* Orange color */
+            font-size: 30px; /* Larger text */
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        *7007 / +995 (32) 2 60 30 60 <!-- Added phone number to the top bar -->
+    </div> <!-- Added top bar here -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('products') }}">
+                <img src="https://zoommer.ge/icons/main-logo.svg" alt="Company Logo">
+            </a>
+            {% if 'user' in session and session['user'].is_admin %}
+                <a class="nav-link btn btn-warning ms-2" href="{{ url_for('admin_page') }}">ადმინისტრატორის პანელი</a>
+            {% endif %}
+            <form class="d-flex ms-auto mx-auto" method="GET" action="{{ url_for('search_results') }}" style="width: 50%;">
+                <input class="form-control" type="search" name="query" placeholder="ძიება" aria-label="Search" style="border-color: #EC5E2A; background-color: #202324; color: white;">
+            </form>
+            
+            
+            <div class="d-flex align-items-center ms-3">
+                {% if 'user' not in session %}
+                    <a class="nav-link btn" href="{{ url_for('register') }}">რეგისტრაცია</a>
+                    <a class="nav-link btn btn-wishlist" href="{{ url_for('login') }}">ავტორიზაცია</a>
+                {% else %}
+                    <a class="nav-link btn" href="{{ url_for('logout') }}">გასვლა</a>
+                {% endif %}
+                {% if 'user' in session %}
+                    <a class="nav-link btn" href="#">კალათა</a>
+                    <a href="{{ url_for('get_profile', id=session['user']['id']) }}">
+                        <img src="https://zoommer.ge/icons/user-icon.svg" alt="User Icon" class="user-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+   
+<!-- Greeting -->
+<div class="greeting">
+    <img src="https://zoommer.ge/icons/profile-icon.svg" alt="Profile Icon">გამარჯობა, {{ username }} {{ 'ADMIN' if is_admin }}
+
+</div>
+
+<!-- Orange line separator -->
+<div class="separator"></div>
+
+<!-- Vertical separator -->
+<div class="vertical-separator"></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <nav class="nav flex-column">
+        <a class="nav-link" href="#" onclick="showContent('aaa')">პროფილი</a>
+        <a class="nav-link" href="#" onclick="showContent('bbb')">გადახდები</a>
+        <a class="nav-link" href="#" onclick="showContent('ccc')">ბარათი</a>
+        <a class="nav-link" href="#" onclick="showContent('ddd')">ხშირი კითხვები</a>
+        <a class="nav-link" href="{{ url_for('logout') }}" onclick="showContent('eee')">გასვლა</a>
+    </nav>
+</div>
+
+<!-- Content Area -->
+<div class="content" id="content">
+    <!-- Content will be displayed here -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Assuming these values are passed from the server
+    var balance = "{{ balance }}";
+    var creditCardCode = "{{ credit_card_code }}";
+    var username = "{{ username }}";
+
+    function showContent(content) {
+        const contentDiv = document.getElementById('content');
+        if (content === 'aaa') {
+            contentDiv.innerHTML = '<h1 class="custom-text">პროფილი</h1>' +
+                                   '<p class="custom-text">სახელი: ' + username + '</p>' +
+                                   '<p class="custom-text">პაროლი: {{ password }}</p>' +
+                                   '<p class="custom-text">ბალანსი: ' + balance + '</p>';
+        } else if (content === 'bbb') {
+            contentDiv.innerHTML = '<h1 class="custom-text">გადახდები</h1> <p class="custom-text">gadaxdebi aq</p>';
+        } else if (content === 'ccc') {
+            contentDiv.innerHTML = '<img src="https://i.ibb.co/DRmL3LN/credit-card-removebg-preview.png" class="jj">' +
+                                   '<p class="custom-text">balance: ' + balance + '</p>' +
+                                   '<p class="custom-text">credit card code: ' + creditCardCode + '</p>' +
+                                   '<p class="custom-text">სახელი: ' + username + '</p>';
+        } else if (content === 'ddd') {
+            contentDiv.innerHTML = '<h1 class="custom-text"></h1>';
+        }
+    }
+</script>
+</body>
+</html>
+
